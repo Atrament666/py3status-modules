@@ -5,6 +5,7 @@ class Py3status:
     cache_timeout = 3600
     url = ''
 
+
     def svatky(self):
         import json
         from datetime import datetime
@@ -25,6 +26,12 @@ class Py3status:
            'cached_until': self.py3.time_in(self.cache_timeout),
            'url' : self.url
         }
+
+    def on_click(self, event):
+        import subprocess
+        subprocess.run(["xdg-open",self.url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 
 if __name__ == "__main__":
     """
