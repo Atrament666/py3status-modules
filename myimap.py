@@ -10,7 +10,7 @@ Configuration parameters:
     hide_if_zero: hide this module when no new mail (default False)
     mailbox: name of the mailbox to check (default 'INBOX')
     password: login password (default None)
-    password_file: path to a file containing gpg encrypted password (default None) 
+    password_file: path to a file containing gpg encrypted password (default None)
     port: number to use (default '993')
     security: login authentication method: 'ssl' or 'starttls'
         (startssl needs python 3.2 or later) (default 'ssl')
@@ -51,7 +51,6 @@ class Py3status:
     server = None
     user = None
 
-
     class Meta:
         deprecated = {
             'rename': [
@@ -73,6 +72,7 @@ class Py3status:
             raise ValueError("Unknown security protocol")
 
     def check_mail(self):
+
         mail_count = self._get_mail_count()
 
         response = {'cached_until': self.py3.time_in(self.cache_timeout)}
@@ -89,11 +89,13 @@ class Py3status:
         if mail_count == 0 and self.hide_if_zero:
             response['full_text'] = ''
         else:
-            response['full_text'] = self.py3.safe_format(self.format, {'unseen': mail_count})
+            response['full_text'] = self.py3.safe_format(
+                self.format, {'unseen': mail_count})
 
         return response
 
     def _connection_ssl(self):
+        print(f'Connecting to: {self.server} port: {self.port}')
         connection = imaplib.IMAP4_SSL(self.server, self.port)
         return connection
 
@@ -111,12 +113,18 @@ class Py3status:
                 connection = self._connection_ssl()
             elif self.security == "starttls":
                 connection = self._connection_starttls()
-           
+
+
             if not self.password and self.password_file:
-                gpg = gnupg.GPG()
-                with open(self.password_file,'rb') as f:
-                    self.password =str(gpg.decrypt_file(f)).rstrip()
-           
+                with open(self.password_file, 'r') as file:
+                    self.password = file.readline()
+
+# this part is commented because the new gnupg version doesn't work with python 3, so we need to read the password directly
+#            if not self.password and self.password_file:
+#                gpg = gnupg.GPG()
+#                with open(self.password_file,'rb') as f:
+#                    self.password =str(gpg.decrypt_file(f)).rstrip()
+
             connection.login(self.user, self.password)
 
             for directory in directories:
@@ -136,4 +144,8 @@ if __name__ == "__main__":
     Run module in test mode.
     """
     from py3status.module_test import module_test
+    Py3status.password_file='/home/atrament/.i3/imap_password'
+    Py3status.user='atramenent666'
+    Py3status.server='imap.gmail.com'
+    Py3status.port='993'
     module_test(Py3status)
