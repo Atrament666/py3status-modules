@@ -19,7 +19,7 @@ class Py3status:
                 day = event_date.strftime('%m%d')
                 if today == day:
                     name = event["DESCRIPTION"]
-                    self.url = event["ATTACH"]
+                    self.url = event["URL"]
 
         return {
            'full_text': self.py3.safe_format(self.format, {'name': name}),
