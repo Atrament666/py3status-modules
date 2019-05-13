@@ -3,3 +3,5 @@ myclementine.py - shows current track played in Clementine, unlike the original 
 svatky.py - has meaning only for czechs :) - ukazuje české svátky
 
 myimap.py - my version of original imap.py script - uses gpg encoded passwords from external file (no passwords in the configuration file) 
+
+gbp_czk_rate.py - displays current GBP to CZK currency rate
